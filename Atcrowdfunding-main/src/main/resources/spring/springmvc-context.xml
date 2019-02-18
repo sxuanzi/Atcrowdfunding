@@ -36,15 +36,15 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
     
-     <bean id="exceptionResolver"  
+<!--      <bean id="exceptionResolver"  
         class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
         <property name="exceptionMappings">  
             <props>
             	<prop key="java.lang.Exception">error/error</prop>
-                <prop key="/Atcrowdfunding-common/src/main/java/com/xuan/atcrowdfunding/exception/LoginFailException.java">login</prop>
+                <prop key="com.xuan.atcrowdfunding.exception.LoginFailException">login</prop>
             </props>  
         </property>  
-    </bean> 
+    </bean>  -->
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:defaultEncoding="UTF-8">
         <property name="maxUploadSize" value="2097152"/>

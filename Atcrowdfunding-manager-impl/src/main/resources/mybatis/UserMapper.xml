@@ -28,13 +28,10 @@
   </insert>
   
   <update id="updateByPrimaryKey" parameterType="com.xuan.atcrowdfunding.bean.User">
-    update t_user
-    set loginacct = #{loginacct,jdbcType=VARCHAR},
-      userpswd = #{userpswd,jdbcType=CHAR},
-      username = #{username,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=CHAR}
-    where id = #{id,jdbcType=INTEGER}
+     update t_user      
+       set username = #{username},  email = #{email}, loginacct = #{loginacct}
+        where id = #{id}
+
   </update>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -48,11 +45,50 @@
     from t_user
   </select>
   
-  <select id="queryUserLogin" parameterMap="map" resultMap="BaseResultMap">
-  	select id, loginacct, userpswd,
-  	username, email, createtime,
-  	from t_user where loginacc=#{loginacct} and userpaswd=#{userpaswd}
+  <select id="queryUserLogin" parameterType="map" resultMap="BaseResultMap">
+  	select id, loginacct, userpswd,    username, email, createtime  
+	from t_user 
+	where loginacct=#{loginacct} and userpswd=#{userpswd}
   </select>
   
+<!--   <select id="queryList"  resultMap="BaseResultMap">
+  	select id, loginacct, userpswd, username, email, createtime  
+	from t_user 
+	limit #{startIndex}, #{pageSize}
+  </select>
+  
+  <select id="queryCount" resultType="int">
+  	select count(*) 
+  	from t_user
+  </select> -->
+  
+  <select id="queryList"  resultMap="BaseResultMap">
+  	select id, loginacct, userpswd, username, email, createtime  
+	from t_user 
+	<where>
+		<if test="queryText!=null">
+			loginacct like concat("%",#{queryText},"%")
+		</if>
+	</where>
+	order by createtime desc
+	limit #{startIndex}, #{pageSize}
+  </select>
+  
+  <select id="queryCount" resultType="int">
+  	select count(*) 
+  	from t_user
+  	<where>
+  		<if test="queryText!=null">
+  			loginacct like concat("%",#{queryText},"%")
+  		</if>
+  	</where>
+  </select>
+  
+  <delete id="deleteBatchUser">
+  	delete from t_user where id in
+  	<foreach collection="array" open="("  separator=","  close=")" item="userid">
+  		#{userid}
+  	</foreach>
+  </delete>
   
 </mapper>

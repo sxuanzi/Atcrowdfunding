@@ -32,18 +32,19 @@
       <form id="LoginForm" class="form-signin" role="form" action="${APP_PATH }/doLogin.do" method="POST">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
 		  <div class="form-group has-success has-feedback">
-			<input type="text" class="form-control" id="inputSuccess4" name="loginacct" value="zhang" placeholder="请输入登录账号" autofocus>
+			<input type="text" class="form-control" id="floginacct" name="loginacct" value="zhang" placeholder="请输入登录账号" autofocus>
 			<span class="glyphicon glyphicon-user form-control-feedback"></span>
 		  </div>
 		  <div class="form-group has-success has-feedback">
-			<input type="password" class="form-control" id="inputSuccess4" name="userpswd" value="123" placeholder="请输入登录密码" style="margin-top:10px;">
+			<input type="password" class="form-control" id="fuserpswd" name="userpswd" value="123" placeholder="请输入登录密码" style="margin-top:10px;">
 			<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 		  </div>
 		  <div class="form-group has-success has-feedback">
-			<select class="form-control" name="type" >
+			<select id="ftype" class="form-control" name="type" >
                 <option value="member">会员</option>
                 <option value="user" selected="selected">管理</option>
             </select>
+            <span id="error" style="color:red" class=""></span>
 		  </div>
         <div class="checkbox">
           <label>
@@ -62,9 +63,58 @@
     </div>
     <script src="${APP_PATH }/jquery/jquery-2.1.1.min.js"></script>
     <script src="${APP_PATH }/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${APP_PATH }/jquery/layer/layer.js"></script>
     <script>
     function dologin() {
-    	$("#LoginForm").submit();
+    	var loginacct = $("#floginacct");
+    	var userpswd = $("#fuserpswd");
+    	var type = $("#ftype");
+    	
+    	if($.trim(loginacct.val()) == ""){
+			layer.msg("请输入用户名", {time:1000, icon:5, shift:6}, function(){
+				$("#loginacct").val("");
+	    		$("#loginacct").focus();
+			});
+			
+    		return false;
+    	}
+    	if($.trim(userpswd.val()) == ""){
+    		layer.msg("请输入密码", {time:1000, icon:5, shift:6}, function(){
+        		$("#userpswd").val("");
+        		$("#userpswd").focus();
+			});
+    		return false;
+    	}
+ 
+    	var loadingIndex  = -1;
+    	
+    	$.ajax({
+    		type : "POST",
+    		url : "${APP_PATH}/doLogin.do",
+    		data : {
+    			"loginacct" : loginacct.val(),
+    			"userpswd" : userpswd.val(),
+    			"type" : type.val()
+    		},
+    		beforeSend : function(){
+    			loadingIndex = layer.msg('处理中', {icon: 16});
+    			return true;
+    		},
+    		success : function(result){
+    			layer.close(loadingIndex);
+    			if(result.success){
+    				window.location.href = "${APP_PATH}/main.htm";
+    			}else{
+    				layer.msg(result.message, {time:1000, icon:5, shift:6});
+    			}
+    		},
+    		error : function(result){
+    			layer.msg("登陆失败！！！", {time:1000, icon:5, shift:6});
+    		}
+    		
+    	});
+    	
+    	//$("#LoginForm").submit();
     	
     /*     var type = $(":selected").val();
         if ( type == "user" ) {

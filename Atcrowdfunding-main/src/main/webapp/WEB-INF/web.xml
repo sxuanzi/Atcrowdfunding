@@ -35,7 +35,7 @@
 	<filter-mapping>
 		<filter-name>encoding</filter-name>
 		<url-pattern>/*</url-pattern>
-<!-- 		<dispatcher>FORWARD</dispatcher> -->
+     	<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
 
 	<!-- 支持RESTful风格，将post请求转换为PUT或者DELETE请求
